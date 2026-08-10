@@ -242,6 +242,36 @@ subtest 'html_unescape (multi-character entity)' => sub {
   is html_unescape('&acE;'), "\x{223e}\x{0333}", 'right HTML unescaped result';
 };
 
+subtest 'html_unescape (invalid code points)' => sub {
+  is html_unescape('&#0;'),             "\x{fffd}",           'null character reference';
+  is html_unescape('&#x0;'),            "\x{fffd}",           'null character reference';
+  is html_unescape('&#xD800;'),         "\x{fffd}",           'leading surrogate';
+  is html_unescape('&#xDBFF;'),         "\x{fffd}",           'leading surrogate';
+  is html_unescape('&#xDC00;'),         "\x{fffd}",           'trailing surrogate';
+  is html_unescape('&#xDFFF;'),         "\x{fffd}",           'trailing surrogate';
+  is html_unescape('&#55296;'),         "\x{fffd}",           'surrogate in decimal';
+  is html_unescape('&#1114112;'),       "\x{fffd}",           'outside unicode range';
+  is html_unescape('&#9999999;'),       "\x{fffd}",           'outside unicode range';
+  is html_unescape('&#xD83D;&#xDE00;'), "\x{fffd}\x{fffd}",   'surrogate pairs are not combined';
+  is html_unescape('&#xD7FF;'),         "\x{d7ff}",           'below surrogate range';
+  is html_unescape('&#xE000;'),         "\x{e000}",           'above surrogate range';
+  is html_unescape('&#x10FFFF;'),       "\x{10ffff}",         'noncharacters are preserved';
+  is html_unescape('&#xFFFE;'),         "\x{fffe}",           'noncharacters are preserved';
+};
+
+subtest 'html_unescape (windows-1252 remap)' => sub {
+  is html_unescape('&#x80;'),  "\x{20ac}", 'euro sign';
+  is html_unescape('&#128;'),  "\x{20ac}", 'euro sign in decimal';
+  is html_unescape('&#0128;'), "\x{20ac}", 'euro sign with leading zero';
+  is html_unescape('&#x93;'),  "\x{201c}", 'left double quotation mark';
+  is html_unescape('&#x99;'),  "\x{2122}", 'trade mark sign';
+  is html_unescape('&#x9F;'),  "\x{0178}", 'latin capital letter y with diaeresis';
+  is html_unescape('&#x81;'),  "\x{81}",   'unmapped control is preserved';
+  is html_unescape('&#x9D;'),  "\x{9d}",   'unmapped control is preserved';
+  is html_unescape('&#x7F;'),  "\x{7f}",   'delete is not remapped';
+  is html_unescape('&#xA0;'),  "\x{a0}",   'no-break space is not remapped';
+};
+
 subtest 'html_unescape (apos)' => sub {
   is html_unescape('foobar&apos;&lt;baz&gt;&#x26;&#34;'), "foobar'<baz>&\"", 'right HTML unescaped result';
 };

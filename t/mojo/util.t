@@ -243,33 +243,33 @@ subtest 'html_unescape (multi-character entity)' => sub {
 };
 
 subtest 'html_unescape (invalid code points)' => sub {
-  is html_unescape('&#0;'),             "\x{fffd}",           'null character reference';
-  is html_unescape('&#x0;'),            "\x{fffd}",           'null character reference';
-  is html_unescape('&#xD800;'),         "\x{fffd}",           'leading surrogate';
-  is html_unescape('&#xDBFF;'),         "\x{fffd}",           'leading surrogate';
-  is html_unescape('&#xDC00;'),         "\x{fffd}",           'trailing surrogate';
-  is html_unescape('&#xDFFF;'),         "\x{fffd}",           'trailing surrogate';
-  is html_unescape('&#55296;'),         "\x{fffd}",           'surrogate in decimal';
-  is html_unescape('&#1114112;'),       "\x{fffd}",           'outside unicode range';
-  is html_unescape('&#9999999;'),       "\x{fffd}",           'outside unicode range';
-  is html_unescape('&#xD83D;&#xDE00;'), "\x{fffd}\x{fffd}",   'surrogate pairs are not combined';
-  is html_unescape('&#xD7FF;'),         "\x{d7ff}",           'below surrogate range';
-  is html_unescape('&#xE000;'),         "\x{e000}",           'above surrogate range';
-  is html_unescape('&#x10FFFF;'),       "\x{10ffff}",         'noncharacters are preserved';
-  is html_unescape('&#xFFFE;'),         "\x{fffe}",           'noncharacters are preserved';
+  is html_unescape('&#0;'),             "\N{U+FFFD}",           'null character reference';
+  is html_unescape('&#x0;'),            "\N{U+FFFD}",           'null character reference';
+  is html_unescape('&#xD800;'),         "\N{U+FFFD}",           'leading surrogate';
+  is html_unescape('&#xDBFF;'),         "\N{U+FFFD}",           'leading surrogate';
+  is html_unescape('&#xDC00;'),         "\N{U+FFFD}",           'trailing surrogate';
+  is html_unescape('&#xDFFF;'),         "\N{U+FFFD}",           'trailing surrogate';
+  is html_unescape('&#55296;'),         "\N{U+FFFD}",           'surrogate in decimal';
+  is html_unescape('&#1114112;'),       "\N{U+FFFD}",           'outside unicode range';
+  is html_unescape('&#9999999;'),       "\N{U+FFFD}",           'outside unicode range';
+  is html_unescape('&#xD83D;&#xDE00;'), "\N{U+FFFD}\N{U+FFFD}", 'surrogate pairs are not combined';
+  is html_unescape('&#xD7FF;'),         "\N{U+D7FF}",           'below surrogate range';
+  is html_unescape('&#xE000;'),         "\N{U+E000}",           'above surrogate range';
+  is html_unescape('&#x10FFFF;'),       "\N{U+10FFFF}",         'noncharacters are preserved';
+  is html_unescape('&#xFFFE;'),         "\N{U+FFFE}",           'noncharacters are preserved';
 };
 
 subtest 'html_unescape (windows-1252 remap)' => sub {
-  is html_unescape('&#x80;'),  "\x{20ac}", 'euro sign';
-  is html_unescape('&#128;'),  "\x{20ac}", 'euro sign in decimal';
-  is html_unescape('&#0128;'), "\x{20ac}", 'euro sign with leading zero';
-  is html_unescape('&#x93;'),  "\x{201c}", 'left double quotation mark';
-  is html_unescape('&#x99;'),  "\x{2122}", 'trade mark sign';
-  is html_unescape('&#x9F;'),  "\x{0178}", 'latin capital letter y with diaeresis';
-  is html_unescape('&#x81;'),  "\x{81}",   'unmapped control is preserved';
-  is html_unescape('&#x9D;'),  "\x{9d}",   'unmapped control is preserved';
-  is html_unescape('&#x7F;'),  "\x{7f}",   'delete is not remapped';
-  is html_unescape('&#xA0;'),  "\x{a0}",   'no-break space is not remapped';
+  is html_unescape('&#x80;'),  "\N{U+20AC}", 'euro sign';
+  is html_unescape('&#128;'),  "\N{U+20AC}", 'euro sign in decimal';
+  is html_unescape('&#0128;'), "\N{U+20AC}", 'euro sign with leading zero';
+  is html_unescape('&#x93;'),  "\N{U+201C}", 'left double quotation mark';
+  is html_unescape('&#x99;'),  "\N{U+2122}", 'trade mark sign';
+  is html_unescape('&#x9F;'),  "\N{U+0178}", 'latin capital letter y with diaeresis';
+  is html_unescape('&#x81;'),  "\N{U+81}",   'unmapped control is preserved';
+  is html_unescape('&#x9D;'),  "\N{U+9D}",   'unmapped control is preserved';
+  is html_unescape('&#x7F;'),  "\N{U+7F}",   'delete is not remapped';
+  is html_unescape('&#xA0;'),  "\N{U+A0}",   'no-break space is not remapped';
 };
 
 subtest 'html_unescape (apos)' => sub {
